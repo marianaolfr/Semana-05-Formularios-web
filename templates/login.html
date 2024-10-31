@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block page_content %}
+
+<body>
+    <div class="container">
+        <form action="./login" method="post" class="form-signin">
+          <input id="csrf_token" name="csrf_token" type="hidden" value="ImUyZGJjZGNjNmViNmUwNDJiNTdiMjU3Yjg4NTEzYjkwN2RlMTA4ZmYi.ZfjR3Q.ED7bkk-anc2ozmAf1d-sVl2hpmk">
+
+            <div class="form-group">
+               <label for="username">Nome de usuário:</label>
+               <input type="text" class="form-control" placeholder="Usuário ou E-mail" required="" id="username" name="nome">
+            </div>
+
+         <div class="form-group">
+             <label for="password">Senha:</label>
+             <input type="password" class="form-control" placeholder="Informe sua senha" required="" id="password" name="password">
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submit" name="submit" value="Enviar">Entrar</button>
+        </form>
+    </div>
+
+
+    <br>
+
+    <p>The local date and time is {{ moment(current_time).format('LLL') }}.</p>
+    <p>That was {{ moment(current_time).fromNow(refresh=True) }}.</p>
+</body>
+{% endblock %}
