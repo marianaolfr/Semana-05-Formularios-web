@@ -1,36 +1,43 @@
+main.py
+
 from datetime import datetime
-from flask import Flask, render_template
+from flask import Flask, render_template, request, session, flash
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
-from flask import request
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
 
-app = Flask(__name__)
+app = Flask(_name_)
+app.config['SECRET_KEY'] = 'top_secret_key_billy'
 
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 
-@app.route('/')
+class NameForm(FlaskForm):
+    name = StringField('What is your name?', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-     return render_template('index.html', current_time=datetime.utcnow())
+    form = NameForm()
+    name = None
 
-@app.route('/user/<name>/<prontuario>/<instituicao>')
-def user(name, prontuario, instituicao):
-    return render_template('user.html', name=name, prontuario=prontuario, instituicao=instituicao)
-
-@app.route('/contexto_requisicao/<name>')
-def contexto_requisicao(name, navegador=None, ip=None, host=None):
-    navegador = request.user_agent.browser
-    ip = request.remote_addr
-    host = request.host
-
-    return render_template('contexto_requisicao.html', name=name, navegador=navegador, ip=ip, host=host)
-
+    if form.validate_on_submit():
+        old_name = session.get('name')
+        
+        if old_name is not None and old_name != form.name.data:
+            flash('Looks like you have changed your name!')
+        
+        session['name'] = form.name.data
+        name = form.name.data
+        form.name.data = '' 
+    
+    return render_template('index.html', current_time=datetime.utcnow(), name=name, form=form)
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
-
-@app.errorhandler(500)
-def internal_server_error(e):
-    return render_template('500.html'), 500
+if _name_ == '_main_':
+    app.run(debug=True)
